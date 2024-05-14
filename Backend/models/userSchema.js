@@ -32,8 +32,8 @@ const userSchema = new mongoose.Schema({
    adhar:{
         type: String,
         required: true,
-        minLength: [12,"nic min must be 12 digit!"],
-        maxLength: [12,"nic min must be 12 digit!"],
+        minLength: [12," adhar no min length must be 12 digit!"],
+        maxLength: [12," adhar no min length must be 12 digit!"],
     },
     dob:{
         type: Date,
