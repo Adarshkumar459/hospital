@@ -2,6 +2,7 @@ import {catchAsyncError}  from "../middlewares/catchAsyncError.js"
 import ErrorHandler from "../middlewares/errorMiddleware.js";
 import { User } from "../models/userSchema.js";
 import { generateToken } from "../utils/jwtToken.js";
+import cloudinary from "cloudinary"
 
 // register for user
 export const patientRregister= catchAsyncError(async (req,res,next)=>{
@@ -174,7 +175,7 @@ export const addNewDoctor = catchAsyncError(async(req,res,next)=>{
         return next(new ErrorHandler("Doctor Avtar Required",400))
     }
     const {docAvtar} =req.files;
-    const allowedFormats=["/image/png" , "/image/png" , "/image/webp"];
+    const allowedFormats= ["image/png" , "image/jpeg" , "image/webp"];
     if(!allowedFormats.includes(docAvtar.mimetype)){
         return next(new ErrorHandler("Files format not supported !",400));
     }
@@ -206,5 +207,33 @@ export const addNewDoctor = catchAsyncError(async(req,res,next)=>{
     if (isRegistered) {
         return next (new ErrorHandler(`${isRegistered.role} is Already registered whis this email`,400))
     }
+
+    const cloudinaryResponce = await cloudinary.uploader.upload(
+        docAvtar.tempFilePath
+    );
+    if (!cloudinaryResponce || cloudinaryResponce.error) {
+        console.error("Cloudinary Error",cloudinaryResponce.error||"Unknown Cloudinary Error")
+    }
+    const doctor= await User.create({
+        firstName,
+        lastName,
+        email,
+        phone, 
+        adhar,        
+        dob,
+        gender,
+        password,
+        doctorDepartment ,
+        rolw: "Doctor",
+        docAvtar :{
+            public_id: cloudinaryResponce.public_id,
+            url: cloudinaryResponce.secure_url,
+        },
+    })
+    res.status(200).json({
+        success: true,
+        message :"New doctor Register",
+        doctor
+    })
 })
 

@@ -1,6 +1,7 @@
 import express from "express"
 import { 
     addNewAdmin,
+    addNewDoctor,
     getAllDoctor, 
     getUserDetails, 
     logOutAdmin, 
@@ -24,4 +25,5 @@ router.get("/admin/me",isAdminAuthenticated,getUserDetails)
 router.get("/patient/me",isPatientAuthenticated,getUserDetails)
 router.get("/admin/logout",isAdminAuthenticated,logOutAdmin)
 router.get("/patient/logout",isPatientAuthenticated,logOutPatient)
+router.post("/doctor/addnew",isAdminAuthenticated,addNewDoctor)
 export default router;
