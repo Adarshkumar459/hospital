@@ -31,15 +31,15 @@ export const isPatientAuthenticated= catchAsyncError(async(req,res,next)=>{
     next();
 })
 
-export const isAuthorized = (...role) => {
-    return (req, res, next) => {
-      if (!role.includes(req.user.role)) {
-        return next(
-          new ErrorHandler(
-            `${req.user.role} not allowed to access this resource!`
-          )
-        );
-      }
-      next();
-    };
-  };
+// export const isAuthorized = (...role) => {
+//     return (req, res, next) => {
+//       if (!role.includes(req.user.role)) {
+//         return next(
+//           new ErrorHandler(
+//             `${req.user.role} not allowed to access this resource!`
+//           )
+//         );
+//       }
+//       next();
+//     };
+//   };
