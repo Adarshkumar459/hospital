@@ -1,10 +1,7 @@
 import mongoose from "mongoose"
 import validator from "validator"
-import bcrypt from "bcrypt"
-import jwt from 'jsonwebtoken'
 
-
-const userSchema = new mongoose.Schema({
+const appontmentSchema = new mongoose.Schema({
     firstName:{
         type: String,
         required: true,
@@ -44,43 +41,46 @@ const userSchema = new mongoose.Schema({
         required:true,
         enum:["Male","Female"],
     },
-    password:{
-        type:String,
-        minLength: [8,"password min must be 8 digit!"],
-        required: true,
-        select:false
-
-    },
-    role:{
+    appontment_date:{
         type: String,
-        required:true,
-        enum:["Admin","Patient","Doctor"],
+        required: true,
     },
-    doctorDepartment:{
-        type:String,
+    department:{
+        type: String,
+        required: true,
     },
-    docAvtar:{
-        public_id:String,
-        url:String,
+    doctor:{
+        firstName:{
+            type: String,
+            required: true,
+        },
+        lastName:{
+            type: String,
+            required: true,
+        },
+    },
+    hasVisited:{
+        type: Boolean,
+        required: true,
+    },
+    doctorId:{
+        type: mongoose.Schema,ObjectId,
+        default: false,
+    },
+    patientId:{
+        type: mongoose.Schema,ObjectId,
+        required: true,
+    },
+    address: {
+        type: String,
+        required: true,
+    },
+    status:{
+        type: String,
+        enum: ["Pending","Accepted","Rejected"],
+        default: "Pending",
     },
 
 })
 
-userSchema.pre("save",async function(next){
-    if (!this.isModified("password")) {
-        next();
-    }
-    this.password=await bcrypt.hash(this.password,10)
-})
-
-userSchema.methods.comaprePassword= async function (enteredPassword){
-    return await bcrypt.compare(enteredPassword,this.password);
-};
-
-userSchema.methods.generateJsonToken=function(){
-    return jwt.sign({id: this._id},process.env.JWT_SECRET_KEY,{
-        expiresIn:process.env.JWT_EXPIRES,
-    })
-}
-
-export const User =mongoose.model("User",userSchema);
+export const Appointment = mongoose.model("Appointment",appontmentSchema);

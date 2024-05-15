@@ -205,7 +205,7 @@ export const addNewDoctor = catchAsyncError(async(req,res,next)=>{
     }
     const isRegistered= await User.findOne({email})
     if (isRegistered) {
-        return next (new ErrorHandler(`${isRegistered.role} is Already registered whis this email`,400))
+        return next (new ErrorHandler(`${isRegistered.role} is Already registered with this email`,400))
     }
 
     const cloudinaryResponce = await cloudinary.uploader.upload(
@@ -224,7 +224,7 @@ export const addNewDoctor = catchAsyncError(async(req,res,next)=>{
         gender,
         password,
         doctorDepartment ,
-        rolw: "Doctor",
+        role: "Doctor",
         docAvtar :{
             public_id: cloudinaryResponce.public_id,
             url: cloudinaryResponce.secure_url,
